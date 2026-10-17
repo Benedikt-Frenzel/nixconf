@@ -35,11 +35,6 @@
         then config.dynamicInitLua
         else config.initLua;
 
-      extraPackages = [
-        pkgs.ffmpeg-full
-        pkgs.wl-clipboard
-      ];
-
       specs.init = {
         data = null;
         before = ["MAIN_INIT"];

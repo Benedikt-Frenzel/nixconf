@@ -1,9 +1,5 @@
 {self, ...}: {
   flake.modules.neovim.lua = {pkgs, ...}: {
-    extraPackages = [
-      pkgs.lua-language-server
-    ];
-
     specs.lua-language-server = {
       data = [
         pkgs.vimPlugins.nvim-lspconfig
@@ -14,7 +10,6 @@
   };
 
   flake.modules.neovim.ts = {pkgs, ...}: {
-    extraPackages = [pkgs.typescript-language-server];
     specs.ts = {
       data = [pkgs.vimPlugins.nvim-lspconfig];
       config =
@@ -33,8 +28,6 @@
   };
 
   flake.modules.neovim.astro = {pkgs, ...}: {
-    extraPackages = [pkgs.astro-language-server];
-
     specs.astro = {
       data = [pkgs.vimPlugins.nvim-lspconfig];
       config =
@@ -53,8 +46,6 @@
   };
 
   flake.modules.neovim.qml = {pkgs, ...}: {
-    extraPackages = [pkgs.kdePackages.qtdeclarative];
-
     specs.qml = {
       data = [pkgs.vimPlugins.nvim-lspconfig];
       config =
@@ -69,8 +60,6 @@
   };
 
   flake.modules.neovim.rust = {pkgs, ...}: {
-    extraPackages = [pkgs.rust-analyzer];
-
     specs.rust = {
       data = [pkgs.vimPlugins.nvim-lspconfig];
       config =
@@ -82,11 +71,6 @@
   };
 
   flake.modules.neovim.nix = {pkgs, ...}: {
-    extraPackages = [
-      pkgs.nixd
-      pkgs.alejandra
-    ];
-
     specs.nix = {
       data = [pkgs.vimPlugins.nvim-lspconfig];
       config =
@@ -111,10 +95,6 @@
   };
 
   flake.modules.neovim.mdx = {pkgs, ...}: {
-    extraPackages = [
-      pkgs.mdx-language-server
-    ];
-
     specs.mdx = {
       data = [pkgs.vimPlugins.nvim-lspconfig];
       config =
@@ -138,12 +118,8 @@
   };
 
   flake.modules.neovim.vjxl = {pkgs, ...}: let
-    selfpkgs = self.packages."${pkgs.system}";
+    selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   in {
-    extraPackages = [
-      selfpkgs.vjxl-format
-    ];
-
     specs.vjxl = {
       data = [
         pkgs.vimPlugins.nvim-lspconfig
