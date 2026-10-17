@@ -1,7 +1,7 @@
 {
   flake.nixosModules.youtube-music = {pkgs, ...}: {
     environment.systemPackages = [
-      pkgs.youtube-music
+      pkgs.pear-desktop
     ];
 
     persistance.cache.directories = [

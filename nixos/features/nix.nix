@@ -15,7 +15,10 @@
       };
     };
 
-    nix.settings.experimental-features = ["nix-command" "flakes"];
+    nix.settings = {
+      experimental-features = ["nix-command" "flakes"];
+      download-buffer-size = 268435456;
+    };
     programs.nix-ld.enable = true;
     nixpkgs.config.allowUnfree = true;
 

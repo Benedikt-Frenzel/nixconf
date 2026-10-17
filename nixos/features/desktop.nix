@@ -1,6 +1,11 @@
 {self, ...}: {
-  flake.nixosModules.desktop = {pkgs, ...}: let
-    selfpkgs = self.packages."${pkgs.system}";
+  flake.nixosModules.desktop = {
+    pkgs,
+    config,
+    ...
+  }: let
+    selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
+    user = config.preferences.user.name;
   in {
     imports = [
       self.nixosModules.gtk
@@ -54,15 +59,39 @@
 
     security.polkit.enable = true;
 
+    programs._1password.enable = true;
+    programs._1password-gui = {
+      enable = true;
+      polkitPolicyOwners = [user];
+    };
+
+    environment.sessionVariables.SSH_AUTH_SOCK = "/home/${user}/.1password/agent.sock";
+
+    hjem.users.${user}.files.".config/opencode/opencode.json".text = builtins.toJSON {
+      "$schema" = "https://opencode.ai/config.json";
+      mcp = {
+        "1password" = {
+          type = "local";
+          command = ["1password-mcp"];
+          enabled = true;
+        };
+      };
+    };
+
+    persistance.data.directories = [
+      ".config/1Password"
+      ".local/share/1Password"
+    ];
+
     hardware = {
       enableAllFirmware = true;
 
       bluetooth.enable = true;
       bluetooth.powerOnBoot = true;
 
-      opengl = {
+      graphics = {
         enable = true;
-        driSupport32Bit = true;
+        enable32Bit = true;
       };
     };
   };
