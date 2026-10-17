@@ -6,6 +6,11 @@
   }: let
     selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
     user = config.preferences.user.name;
+    pcmanfm = pkgs.pcmanfm.overrideAttrs (old: {
+      postInstall = (old.postInstall or "") + ''
+        rm -f $out/share/applications/pcmanfm-desktop-pref.desktop
+      '';
+    });
   in {
     imports = [
       self.nixosModules.gtk
@@ -23,7 +28,7 @@
 
     environment.systemPackages = [
       selfpkgs.terminal
-      pkgs.pcmanfm
+      pcmanfm
       selfpkgs.noctalia-shell
     ];
 
