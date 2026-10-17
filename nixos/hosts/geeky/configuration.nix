@@ -1,0 +1,91 @@
+{
+  inputs,
+  self,
+  ...
+}: {
+  flake.nixosConfigurations.geeky = inputs.nixpkgs.lib.nixosSystem {
+    modules = [
+      self.nixosModules.hostGeeky
+    ];
+  };
+
+  flake.nixosModules.hostGeeky = {
+    pkgs,
+    lib,
+    config,
+    ...
+  }: {
+    imports = [
+      self.nixosModules.base
+      self.nixosModules.general
+      self.nixosModules.desktop
+
+      self.nixosModules.discord
+      self.nixosModules.gimp
+      self.nixosModules.telegram
+      self.nixosModules.youtube-music
+
+      self.nixosModules.gaming
+    ];
+
+    preferences.user.name = "ben";
+
+    users.users.${config.preferences.user.name} = {
+      description = lib.mkForce "Benedikt";
+      hashedPasswordFile = lib.mkForce null;
+    };
+
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
+
+    networking = {
+      hostName = "geeky";
+      networkmanager.enable = true;
+    };
+
+    time.timeZone = lib.mkForce "Europe/Berlin";
+    i18n.extraLocaleSettings = lib.mkForce {
+      LC_ADDRESS = "de_DE.UTF-8";
+      LC_IDENTIFICATION = "de_DE.UTF-8";
+      LC_MEASUREMENT = "de_DE.UTF-8";
+      LC_MONETARY = "de_DE.UTF-8";
+      LC_NAME = "de_DE.UTF-8";
+      LC_NUMERIC = "de_DE.UTF-8";
+      LC_PAPER = "de_DE.UTF-8";
+      LC_TELEPHONE = "de_DE.UTF-8";
+      LC_TIME = "de_DE.UTF-8";
+    };
+
+    services.xserver.xkb = {
+      layout = "de,us";
+      options = "grp:alt_shift_toggle";
+    };
+    console.keyMap = "de";
+
+    programs.niri.package = lib.mkForce (
+      inputs.wrapper-modules.wrappers.niri.wrap {
+        inherit pkgs;
+        imports = [self.wrappersModules.niri];
+        xkbLayout = "de,us";
+      }
+    );
+
+    services.printing.enable = true;
+
+    environment.systemPackages = with pkgs; [
+      winetricks
+      glib
+      bs-manager
+      zerotierone
+      android-tools
+    ];
+
+    xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk];
+    xdg.portal.enable = true;
+
+    programs.appimage.enable = true;
+    programs.appimage.binfmt = true;
+
+    system.stateVersion = "26.05";
+  };
+}
