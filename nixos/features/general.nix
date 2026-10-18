@@ -20,6 +20,10 @@
       initialPassword = "12345";
     };
 
+    environment.systemPackages = [
+      self.packages.${pkgs.stdenv.hostPlatform.system}.git
+    ];
+
     persistance.data.directories = [
       "nixconf"
 
