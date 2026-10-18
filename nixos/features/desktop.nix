@@ -63,6 +63,9 @@
     services.upower.enable = true;
     services.power-profiles-daemon.enable = true;
 
+    # USB, trash and phone mounts for pcmanfm. Also pulls in udisks2.
+    services.gvfs.enable = true;
+
     security.polkit.enable = true;
 
     programs._1password.enable = true;
