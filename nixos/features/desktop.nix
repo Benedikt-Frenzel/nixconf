@@ -2,6 +2,7 @@
   flake.nixosModules.desktop = {
     pkgs,
     config,
+    lib,
     ...
   }: let
     selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
@@ -65,6 +66,40 @@
 
     # USB, trash and phone mounts for pcmanfm. Also pulls in udisks2.
     services.gvfs.enable = true;
+
+    services.greetd = {
+      enable = true;
+      useTextGreeter = true;
+      settings.default_session.command = lib.escapeShellArgs [
+        (lib.getExe pkgs.tuigreet)
+        "--time"
+        "--asterisks"
+        "--remember"
+        "--user-menu"
+        "--greeting"
+        "geeky"
+        "--cmd"
+        (lib.getExe' config.programs.niri.package "niri-session")
+        "--sessions"
+        "${config.services.displayManager.sessionData.desktops}/share/wayland-sessions"
+        "--theme"
+        "border=${self.theme.base0B};text=${self.theme.base06};prompt=${self.theme.base0B};time=${self.theme.base0A};action=${self.theme.base09};button=${self.theme.base0B};container=${self.theme.base00};input=${self.theme.base07}"
+      ];
+    };
+
+    # tuigreet's power menu runs systemctl as the greeter user.
+    security.polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (subject.user == "greeter" && (
+          action.id == "org.freedesktop.login1.reboot" ||
+          action.id == "org.freedesktop.login1.reboot-multiple-sessions" ||
+          action.id == "org.freedesktop.login1.power-off" ||
+          action.id == "org.freedesktop.login1.power-off-multiple-sessions"
+        )) {
+          return polkit.Result.YES;
+        }
+      });
+    '';
 
     security.polkit.enable = true;
 
