@@ -31,6 +31,9 @@
       selfpkgs.terminal
       pcmanfm
       selfpkgs.noctalia-shell
+      pkgs.cliphist
+      pkgs.wl-clipboard
+      pkgs.wl-clip-persist
     ];
 
     fonts.packages = with pkgs; [
@@ -137,6 +140,10 @@
     persistance.data.directories = [
       ".config/1Password"
       ".local/share/1Password"
+    ];
+
+    persistance.cache.directories = [
+      ".cache/cliphist"
     ];
 
     hardware = {

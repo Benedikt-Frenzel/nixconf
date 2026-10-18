@@ -32,7 +32,7 @@
             customLaunchPrefix = "";
             customLaunchPrefixEnabled = false;
             enableClipPreview = true;
-            enableClipboardHistory = false;
+            enableClipboardHistory = true;
             iconMode = "tabler";
             pinnedExecs = [];
             position = "center";

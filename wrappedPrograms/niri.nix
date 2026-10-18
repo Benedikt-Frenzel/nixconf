@@ -193,6 +193,12 @@
             "${lib.getExe pkgs.swaybg} -i ${self.wallpaper} -m fill"
           ))
         ];
+
+        # Keeps the last copy alive after the source window closes.
+        # Noctalia's cliphist watchers own history; this only holds the selection.
+        spawn-sh-at-startup = [
+          "${lib.getExe pkgs.wl-clip-persist} --clipboard regular"
+        ];
       };
     };
   };
