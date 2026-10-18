@@ -26,6 +26,11 @@
     };
 
     nix-gaming.url = "github:fufexan/nix-gaming";
+
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix/a15afd52a86657d426b47a34507056a83ac6620a";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # Import all .nix files from current directory except flake.nix recursively

@@ -8,7 +8,8 @@
     pkgs,
     self',
     ...
-  }: {
+  }: lib.mkMerge [
+    {
     # My whole desktop in one package, includes kityy terminal
     packages.desktop = inputs.wrapper-modules.wrappers.niri.wrap {
       inherit pkgs;
@@ -75,7 +76,8 @@
         self'.packages.jujutsu
         self'.packages.jjui
         self'.packages.nix-check-bin
-      ];
+      ]
+      ++ lib.optionals (builtins.hasAttr "opencode2" self'.packages) [self'.packages.opencode2];
       env = {
         EDITOR = lib.getExe self'.packages.neovimDynamic;
       };
@@ -87,5 +89,13 @@
         $EDITOR "$(nix build "$1" --no-link --print-out-paths)/bin"
       '';
     };
-  };
+    }
+    (lib.mkIf (builtins.elem pkgs.stdenv.hostPlatform.system [
+      "x86_64-linux"
+      "aarch64-linux"
+      "aarch64-darwin"
+    ]) {
+      packages.opencode2 = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode2;
+    })
+  ];
 }
