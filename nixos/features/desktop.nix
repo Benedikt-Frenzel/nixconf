@@ -12,6 +12,14 @@
         rm -f $out/share/applications/pcmanfm-desktop-pref.desktop
       '';
     });
+    # The GUI package links op-ssh-sign into bin, but not 1password-mcp.
+    # The binary only needs a Nix dynamic linker; glibc is enough.
+    passwordMcp = pkgs.runCommand "1password-mcp" {nativeBuildInputs = [pkgs.patchelf];} ''
+      mkdir -p $out/bin
+      cp ${config.programs._1password-gui.package}/share/1password/1password-mcp $out/bin/1password-mcp
+      chmod u+w $out/bin/1password-mcp
+      patchelf --set-interpreter "$(cat ${pkgs.stdenv.cc}/nix-support/dynamic-linker)" $out/bin/1password-mcp
+    '';
   in {
     imports = [
       self.nixosModules.pipewire
@@ -29,6 +37,7 @@
       selfpkgs.terminal
       pcmanfm
       selfpkgs.noctalia-shell
+      passwordMcp
       pkgs.cliphist
       pkgs.wl-clipboard
       pkgs.wl-clip-persist
@@ -115,12 +124,9 @@
     hjem.users.${user}.files = {
       ".config/opencode/opencode.json".text = builtins.toJSON {
         "$schema" = "https://opencode.ai/config.json";
-        mcp = {
-          "1password" = {
-            type = "local";
-            command = ["1password-mcp"];
-            enabled = true;
-          };
+        mcp.servers."1password" = {
+          type = "local";
+          command = ["${passwordMcp}/bin/1password-mcp"];
         };
       };
 
