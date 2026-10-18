@@ -27,8 +27,20 @@
         inherit pkgs;
         settings = {
           user = {
-            name = "Yurii";
-            email = "yurii@goxore.com";
+            name = "Benedikt Frenzel";
+            email = "git@bfr.sh";
+          };
+          # Same SSH key as wrappedPrograms/git.nix, from the host 1Password vault.
+          signing = {
+            backend = "ssh";
+            behavior = "own";
+            key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9tV5OCfsjlyLiPOwQZsx6NmK6D9KCD8iGmUnQF9/Bz geeky";
+            backends.ssh = {
+              program = "/run/current-system/sw/bin/op-ssh-sign";
+              allowed-signers = "${pkgs.writeText "allowed_signers" ''
+                git@bfr.sh namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9tV5OCfsjlyLiPOwQZsx6NmK6D9KCD8iGmUnQF9/Bz
+              ''}";
+            };
           };
           aliases = {
             l = logCommand;

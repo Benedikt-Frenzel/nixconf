@@ -52,7 +52,7 @@
       files.".config/openxr/1/active_runtime.json".source = "${pkgs.wivrn}/share/openxr/1/openxr_wivrn.json";
 
       files.".config/openvr/openvrpaths.vrpath".text = let
-        steam = "/home/yurii/.local/share/Steam";
+        steam = "/home/${user}/.local/share/Steam";
       in
         builtins.toJSON {
           version = 1;
