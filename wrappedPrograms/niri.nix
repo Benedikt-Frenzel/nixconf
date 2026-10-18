@@ -24,6 +24,11 @@
       in {
         prefer-no-csd = true;
 
+        cursor = {
+          xcursor-theme = "Afterglow-Recolored-Gruvbox-Green";
+          xcursor-size = 24;
+        };
+
         input = {
           focus-follows-mouse = {};
 
