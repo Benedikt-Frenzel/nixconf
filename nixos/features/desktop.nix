@@ -111,14 +111,26 @@
 
     environment.sessionVariables.SSH_AUTH_SOCK = "/home/${user}/.1password/agent.sock";
 
-    hjem.users.${user}.files.".config/opencode/opencode.json".text = builtins.toJSON {
-      "$schema" = "https://opencode.ai/config.json";
-      mcp = {
-        "1password" = {
-          type = "local";
-          command = ["1password-mcp"];
-          enabled = true;
+    hjem.users.${user}.files = {
+      ".config/opencode/opencode.json".text = builtins.toJSON {
+        "$schema" = "https://opencode.ai/config.json";
+        mcp = {
+          "1password" = {
+            type = "local";
+            command = ["1password-mcp"];
+            enabled = true;
+          };
         };
+      };
+
+      # 1Password ignores a symlinked agent.toml, so this has to be a real file.
+      # Vault is $HOSTNAME#$USER, for example geeky#ben.
+      ".config/1Password/ssh/agent.toml" = {
+        type = "copy";
+        text = ''
+          [[ssh-keys]]
+          vault = "${config.networking.hostName}#${user}"
+        '';
       };
     };
 
