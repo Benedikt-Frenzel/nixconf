@@ -75,7 +75,6 @@
     environment.systemPackages = with pkgs; [
       winetricks
       glib
-      bs-manager
       zerotierone
       android-tools
     ];

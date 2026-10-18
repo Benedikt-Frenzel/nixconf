@@ -10,13 +10,6 @@
       gamemode.enable = true;
       gamescope.enable = true;
       steam = {
-        # package = pkgs.steam.override {
-        #   extraProfile = ''
-        #     unset TZ
-        #     # Allows Monado/WiVRn to be used
-        #     export PRESSURE_VESSEL_IMPORT_OPENXR_1_RUNTIMES=1
-        #   '';
-        # };
         enable = true;
         # extraCompatPackages = with pkgs; [
         #   proton-ge-bin

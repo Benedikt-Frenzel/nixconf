@@ -12,5 +12,4 @@
 - Erledigt: `youtube-music` durch `pear-desktop` ersetzt.
 - Erledigt: Paket-Systemzugriffe verwenden `stdenv.hostPlatform.system`.
 - Erledigt: Nix-Download-Buffer auf 256 MiB gesetzt.
-- Erledigt: veraltete WiVRn-Option `defaultRuntime` entfernt; WiVRn verwaltet den Runtime-Eintrag selbst.
 - Hinweis: Es existiert nur noch der Host `geeky`; main und mini wurden entfernt.
