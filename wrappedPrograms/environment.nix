@@ -59,8 +59,8 @@
         pkgs.dust
         pkgs.ripgrep
         pkgs.fastfetch
-	pkgs.opencode
-	pkgs.hyfetch
+	    pkgs.opencode
+	    pkgs.hyfetch
         pkgs.tree-sitter
         pkgs.imagemagick
         pkgs.imv
