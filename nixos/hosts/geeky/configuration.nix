@@ -24,6 +24,13 @@
       self.nixosModules.gimp
       self.nixosModules.telegram
       self.nixosModules.youtube-music
+      self.nixosModules.obsidian
+      self.nixosModules.gramps
+      self.nixosModules.syncthing
+      self.nixosModules.ausweisapp
+      self.nixosModules.opensnitch
+      self.nixosModules.secureboot
+      self.nixosModules.nitrokey
 
       self.nixosModules.gaming
     ];
@@ -37,6 +44,7 @@
 
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
+    boot.binfmt.emulatedSystems = ["aarch64-linux"];
 
     networking = {
       hostName = "geeky";
@@ -75,8 +83,8 @@
     environment.systemPackages = with pkgs; [
       winetricks
       glib
-      zerotierone
       android-tools
+      orca-slicer
     ];
 
     xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk];
