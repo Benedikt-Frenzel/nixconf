@@ -43,7 +43,6 @@
               "/etc/NetworkManager/system-connections"
               "/tmp"
 
-              "/var/lib/zerotier-one"
               # {
               #   directory = "/var/lib/colord";
               #   user = "colord";
