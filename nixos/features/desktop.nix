@@ -12,14 +12,40 @@
         rm -f $out/share/applications/pcmanfm-desktop-pref.desktop
       '';
     });
-    # The GUI package links op-ssh-sign into bin, but not 1password-mcp.
-    # The binary only needs a Nix dynamic linker; glibc is enough.
-    passwordMcp = pkgs.runCommand "1password-mcp" {nativeBuildInputs = [pkgs.patchelf];} ''
-      mkdir -p $out/bin
-      cp ${config.programs._1password-gui.package}/share/1password/1password-mcp $out/bin/1password-mcp
-      chmod u+w $out/bin/1password-mcp
-      patchelf --set-interpreter "$(cat ${pkgs.stdenv.cc}/nix-support/dynamic-linker)" $out/bin/1password-mcp
+    # References only: op resolves the credentials at runtime, never during a build.
+    opencodeEnv = pkgs.writeText "opencode.env" ''
+      MINIMAX_API_KEY=op://AI/xnuzyj7llnouc2bovppuzm7fvu/credential
+      MISTRAL_API_KEY=op://AI/iwxpx2iqryutxvecb6hast2a2u/credential
+      VENICE_API_KEY=op://AI/3atx3ri74ptberjmegdvyugaee/credential
+      MOONSHOT_API_KEY=op://AI/ram3g3tncmmphiwgum4une7kx4/credential
+      OPENROUTER_API_KEY=op://AI/rwjrvaso4xknpwt5yuih3rd6me/credential
+      ZHIPU_API_KEY=op://AI/cz2zm72n2c6kdpm56trhl6cpsa/credential
+      DEEPSEEK_API_KEY=op://AI/bbyctjsymt4vxhfyp5n4rfltaa/credential
     '';
+    opencode = pkgs.writeShellApplication {
+      name = "opencode";
+      text = ''
+        envFile="''${XDG_CONFIG_HOME:-$HOME/.config}/opencode/1password.env"
+        if [[ -e "$envFile" && ! -p "$envFile" ]]; then
+          echo "Expected a 1Password FIFO at $envFile, not a plaintext file." >&2
+          exit 1
+        fi
+        if [[ ! -p "$envFile" ]]; then
+          envFile=${opencodeEnv}
+        fi
+        # Use the privileged CLI wrapper for desktop-app integration on NixOS.
+        # A private server cannot accidentally reuse a service without these keys.
+        # Masking pipes stdout/stderr, breaking the TUI's terminal size detection.
+        exec /run/wrappers/bin/op run --no-masking --env-file="$envFile" -- ${lib.getExe selfpkgs.opencode2} --standalone "$@"
+      '';
+    };
+    veniceMcp = pkgs.writeShellApplication {
+      name = "venice-mcp";
+      runtimeInputs = [pkgs.nodejs];
+      text = ''
+        exec npx --yes @veniceai/mcp-server@0.3.0
+      '';
+    };
   in {
     imports = [
       self.nixosModules.pipewire
@@ -37,7 +63,7 @@
       selfpkgs.terminal
       pcmanfm
       selfpkgs.noctalia-shell
-      passwordMcp
+      opencode
       pkgs.cliphist
       pkgs.wl-clipboard
       pkgs.wl-clip-persist
@@ -124,9 +150,20 @@
     hjem.users.${user}.files = {
       ".config/opencode/opencode.json".text = builtins.toJSON {
         "$schema" = "https://opencode.ai/config.json";
-        mcp.servers."1password" = {
+        providers = lib.mapAttrs (_: env: {inherit env;}) {
+          minimax = ["MINIMAX_API_KEY"];
+          mistral = ["MISTRAL_API_KEY"];
+          venice = ["VENICE_API_KEY"];
+          moonshotai = ["MOONSHOT_API_KEY"];
+          openrouter = ["OPENROUTER_API_KEY"];
+          zai = ["ZHIPU_API_KEY"];
+          deepseek = ["DEEPSEEK_API_KEY"];
+        };
+        mcp.servers.venice = {
           type = "local";
-          command = ["${passwordMcp}/bin/1password-mcp"];
+          command = ["${veniceMcp}/bin/venice-mcp"];
+          environment.VENICE_API_KEY = "{env:VENICE_API_KEY}";
+          timeout.startup = 120000;
         };
       };
 

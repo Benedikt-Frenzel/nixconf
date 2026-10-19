@@ -59,7 +59,6 @@
         pkgs.dust
         pkgs.ripgrep
         pkgs.fastfetch
-	    pkgs.opencode
 	    pkgs.hyfetch
         pkgs.tree-sitter
         pkgs.imagemagick
@@ -76,8 +75,7 @@
         self'.packages.jujutsu
         self'.packages.jjui
         self'.packages.nix-check-bin
-      ]
-      ++ lib.optionals (builtins.hasAttr "opencode2" self'.packages) [self'.packages.opencode2];
+      ];
       env = {
         EDITOR = lib.getExe self'.packages.neovimDynamic;
       };
