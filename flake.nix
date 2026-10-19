@@ -2,6 +2,11 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.2.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # The framework I use to structure the flake, module imports are automatic via custom function below
     flake-parts.url = "github:hercules-ci/flake-parts";
 
@@ -24,8 +29,6 @@
       url = "github:feel-co/hjem";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    nix-gaming.url = "github:fufexan/nix-gaming";
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix/a15afd52a86657d426b47a34507056a83ac6620a";
