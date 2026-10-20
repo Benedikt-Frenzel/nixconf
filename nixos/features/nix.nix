@@ -36,6 +36,7 @@
       alejandra
       manix
       nix-inspect
+      nh
     ];
   };
 }

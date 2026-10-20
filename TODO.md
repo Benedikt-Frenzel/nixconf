@@ -1,7 +1,8 @@
 # geeky
 
 - Nicht `nixos-rebuild switch` auf dem laufenden System. GDM/GNOME fällt sofort weg, nixconf startet keinen Display-Manager.
-- Erst bauen, dann booten: `sudo nixos-rebuild boot --flake /home/ben/Projects/nixconf#geeky`, danach neu starten.
+- System-Update: `scripts/update-check.sh` (zeigt Diff + Security-Flags, dann `nh os boot`). Siehe `docs/update.md`.
+- Manuell: erst bauen, dann booten: `sudo nh os boot /home/ben/Projects/nixconf#geeky`, danach neu starten.
 - Nach dem Boot: tuigreet auf tty1, einloggen als `ben`. Die Session ist `niri-session`.
 - Andere TTYs bleiben erreichbar mit Ctrl+Alt+F2.
 - Bestehendes Passwort von `ben` bleibt. `12345` aus `general.nix` gilt nur, wenn der User neu angelegt wird.
