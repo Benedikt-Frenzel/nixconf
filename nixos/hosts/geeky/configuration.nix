@@ -49,6 +49,10 @@
     boot.loader.efi.canTouchEfiVariables = true;
     boot.binfmt.emulatedSystems = ["aarch64-linux"];
 
+    # TEST: kernel 7 for the xe driver on the Meteor Lake iGPU. Remove once
+    # xe supports device 7d55 (or if the test fails) to go back to 6.18.
+    boot.kernelPackages = pkgs.linuxPackages_latest;
+
     networking = {
       hostName = "geeky";
       networkmanager.enable = true;

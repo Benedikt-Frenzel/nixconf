@@ -6,10 +6,11 @@
   }: {
     hardware.graphics.enable = lib.mkDefault true;
 
-    # geeky has only the Meteor Lake iGPU (Arc Xe-LPG). Let the modern xe
-    # driver claim it instead of the legacy i915 one; xe is the supported
-    # path for Meteor Lake on current kernels and games run smoother.
-    # Rollback: boot an earlier generation if the display misbehaves.
+    # Note: xe must NOT be forced on kernel 6.18. The Meteor Lake iGPU
+    # (device 7d55) reports "not officially supported" by xe and niri then
+    # fails to get a render node, leaving the session black.
+    # TEST: with kernel 7 (see host config) xe may support 7d55; this line
+    # makes the xe driver claim the device. Remove on failure.
     boot.kernelParams = ["modprobe.blacklist=i915"];
 
     # Match the CPU governor to the power source: full speed on AC (gaming),
