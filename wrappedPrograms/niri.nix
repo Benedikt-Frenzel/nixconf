@@ -193,6 +193,11 @@
 
         spawn-at-startup = [
           noctaliaExe
+          # Keep 1Password running for the SSH agent and the opencode
+          # environment FIFO. Plain name on purpose: the wrapper build
+          # must not evaluate the unfree package here; niri resolves it
+          # through the session PATH.
+          "1password"
           (lib.getExe (
             pkgs.writeShellScriptBin "wallpaper"
             "${lib.getExe pkgs.swaybg} -i ${self.wallpaper} -m fill"

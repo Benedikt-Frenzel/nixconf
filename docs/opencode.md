@@ -3,7 +3,8 @@
 Start the OpenCode V2 TUI with `opencode`. Approve the 1Password CLI prompt
 when requested. The launcher uses a private server (`--standalone`) so an
 already-running background service cannot silently ignore the injected keys.
-Only `opencode` is installed as a command; it wraps the V2 package with 1Password.
+Only `opencode` and `vibe` are installed as commands; both wrap their upstream
+package with 1Password.
 
 The launcher uses `op run --no-masking` to keep stdout/stderr attached to the
 terminal for TUI sizing and redraws. 1Password still injects credentials at
@@ -45,6 +46,23 @@ not need the newer CLI's `op run --environment` support. Environment values
 copied from vault items must be updated separately when those keys rotate.
 1Password must be running; locking it prevents new authorized FIFO reads but
 does not revoke keys already loaded into a running OpenCode process.
+
+## Mistral Vibe CLI
+
+`vibe` wraps the `mistral-vibe` package from the `llm-agents` input with the
+same `op run` launcher as `opencode`, including the `--no-masking` exception.
+The keys differ, so it does not share the OpenCode FIFO: it prefers its own
+FIFO at `~/.config/vibe/1password.env` and otherwise falls back to a store
+file that references the Pro-plan key (`API - Mistral Vipe Pro` in the AI
+vault) as `MISTRAL_API_KEY`. opencode keeps `PI API - Mistral`; a coding-plan
+credential is not assumed to work against the general API endpoint.
+
+For Mistral-provider setups the CLI defaults to browser-based sign-in
+(`vibe --setup`), which provisions its own credentials via the system keyring;
+nothing lands in `~/.vibe`. Environment variables take precedence over
+`~/.vibe/.env` and `config.toml`, and `/status` shows the credential source
+in use and the shadowed ones. `~/.vibe` holds `config.toml` (agents, presets,
+model settings) and caches only, which is why it is persisted.
 
 ## Venice MCP
 

@@ -39,6 +39,26 @@
         exec /run/wrappers/bin/op run --no-masking --env-file="$envFile" -- ${lib.getExe selfpkgs.opencode2} --standalone "$@"
       '';
     };
+    vibeEnv = pkgs.writeText "vibe.env" ''
+      MISTRAL_API_KEY=op://AI/ug36otigk3ndflbgntgzzujmbm/credential
+    '';
+    vibe = pkgs.writeShellApplication {
+      name = "vibe";
+      text = ''
+        envFile="''${XDG_CONFIG_HOME:-$HOME/.config}/vibe/1password.env"
+        if [[ -e "$envFile" && ! -p "$envFile" ]]; then
+          echo "Expected a 1Password FIFO at $envFile, not a plaintext file." >&2
+          exit 1
+        fi
+        if [[ ! -p "$envFile" ]]; then
+          envFile=${vibeEnv}
+        fi
+        # The Pro-plan key is separate from opencode's Mistral platform key,
+        # so vibe reads its own FIFO instead of the OpenCode environment.
+        # Masking pipes stdout/stderr, breaking the TUI's terminal size detection.
+        exec /run/wrappers/bin/op run --no-masking --env-file="$envFile" -- ${lib.getExe selfpkgs.mistral-vibe} "$@"
+      '';
+    };
     veniceMcp = pkgs.writeShellApplication {
       name = "venice-mcp";
       runtimeInputs = [pkgs.nodejs];
@@ -64,6 +84,7 @@
       pcmanfm
       selfpkgs.noctalia-shell
       opencode
+      vibe
       pkgs.cliphist
       pkgs.wl-clipboard
       pkgs.wl-clip-persist
@@ -181,6 +202,8 @@
     persistance.data.directories = [
       ".config/1Password"
       ".local/share/1Password"
+      # mistral-vibe config.toml and caches; credentials live in the keyring.
+      ".vibe"
     ];
 
     persistance.cache.directories = [

@@ -94,6 +94,7 @@
       "aarch64-darwin"
     ]) {
       packages.opencode2 = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode2;
+      packages.mistral-vibe = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mistral-vibe;
     })
   ];
 }
