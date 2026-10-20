@@ -106,9 +106,12 @@ echo "New system: $NEW_SYSTEM"
 
 # --- 4. Diff old vs new ------------------------------------------------------
 hr "Package changes"
-# nix store diff-closures: lines like "  pkg version -> version" for changes,
-# "+ pkg version" for additions, "- pkg version" for removals.
-DIFF_OUTPUT=$(nix store diff-closures "$CURRENT" "$NEW_SYSTEM" 2>/dev/null || true)
+# nix store diff-closures output format (after stripping ANSI colors):
+#   "pkg: ∅ → 1.0, 1.2 MiB"     — new package
+#   "pkg: 1.0 → ∅, 1.2 MiB"     — removed package
+#   "pkg: 1.0 → 2.0, 1.2 MiB"   — changed version
+DIFF_OUTPUT=$(nix store diff-closures "$CURRENT" "$NEW_SYSTEM" 2>/dev/null \
+  | sed 's/\x1b\[[0-9;]*m//g' || true)
 if [[ -z "$DIFF_OUTPUT" ]]; then
   echo "No package differences found."
 else
@@ -121,9 +124,11 @@ SECURITY_HITS=0
 declare -A flagged=()
 
 while IFS= read -r line; do
-  # Extract the package name from diff lines like:
-  #   "  firefox 130.0 -> 131.0"  or  "+ foo 1.0"  or  "- bar 2.0"
-  pkg=$(echo "$line" | sed -n 's/^[+- ]*\([a-zA-Z0-9._+-]*\) .*/\1/p' | head -1)
+  # Package name is everything before the first colon.
+  pkg="${line%%:*}"
+  # Trim leading/trailing whitespace.
+  pkg="${pkg#"${pkg%%[![:space:]]*}"}"
+  pkg="${pkg%"${pkg##*[![:space:]]}"}"
   [[ -z "$pkg" ]] && continue
   # Match against known critical packages (substring match on pname)
   for critical in "${!SECURITY_CRITICAL[@]}"; do
@@ -151,9 +156,11 @@ hr "Summary"
 echo "Host       : $HOST"
 echo "Flake      : $FLAKE"
 if [[ -n "${DIFF_OUTPUT:-}" ]]; then
-  added=$(echo "$DIFF_OUTPUT" | grep -c '^[+]' || true)
-  removed=$(echo "$DIFF_OUTPUT" | grep -c '^-' || true)
-  changed=$(echo "$DIFF_OUTPUT" | grep -c '->' || true)
+  # ∅ → version = added, version → ∅ = removed, old → new = changed
+  added=$(echo "$DIFF_OUTPUT" | grep -c '∅ →' || true)
+  removed=$(echo "$DIFF_OUTPUT" | grep -c '→ ∅' || true)
+  changed=$(echo "$DIFF_OUTPUT" | grep -c '→' || true)
+  changed=$((changed - added - removed))
   echo "Changes    : +${added} -${removed} ~${changed}"
 fi
 echo "Security   : ${SECURITY_HITS} critical package(s)"
