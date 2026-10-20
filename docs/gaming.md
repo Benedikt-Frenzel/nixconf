@@ -20,12 +20,15 @@ gamemoderun gamescope --mangoapp -w 1920 -h 1080 -F fsr -- %command%
 
 ## Notes
 
-- Driver: currently testing the `xe` driver with kernel 7.2.11
-  (`boot.kernelPackages = linuxPackages_latest` in the host config + i915
-  blacklisted in the gaming module) for the Meteor Lake iGPU (7d55). On
-  kernel 6.18 xe reports the device as "not officially supported" and niri
-  fails to get a render node — that combination must not be used. If the
-  kernel-7 test fails, remove both the blacklist and the kernel override.
+- Driver: i915 drives the Meteor Lake iGPU (7d55). The xe driver rejects
+  that device as "not officially supported" — on kernel 6.18 and on kernel
+  7.2.11 alike — and then probes no GPU at all: no render node, no niri
+  output, black screen. Blacklisting i915 is therefore off.
+- Kernel: currently testing kernel 7.2.11 (`linuxPackages_latest`) with the
+  i915 driver. If the session stays black, drop the kernel override in
+  `nixos/hosts/geeky/configuration.nix` to go back to the default 6.18.
+- If xe supports 7d55 upstream one day, force the probe with the parameters
+  the kernel prints itself (`i915.force_probe=!7d55`, `xe.force_probe=7d55`).
 - Governor: on AC the CPU governor is forced to `performance`; on battery it
   goes back to `powersave`. Manage with `powerprofilesctl` if needed.
 - VRR is allowed on eDP-1/DP-4/DP-6; the docked LGs report VRR as unsupported.

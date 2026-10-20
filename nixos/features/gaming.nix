@@ -6,12 +6,20 @@
   }: {
     hardware.graphics.enable = lib.mkDefault true;
 
-    # Note: xe must NOT be forced on kernel 6.18. The Meteor Lake iGPU
-    # (device 7d55) reports "not officially supported" by xe and niri then
-    # fails to get a render node, leaving the session black.
-    # TEST: with kernel 7 (see host config) xe may support 7d55; this line
-    # makes the xe driver claim the device. Remove on failure.
-    boot.kernelParams = ["modprobe.blacklist=i915"];
+    # Driver: i915 has to claim the Meteor Lake iGPU (device 7d55).
+    # The xe driver rejects the device as "not officially supported" on
+    # kernel 6.18 and on kernel 7.2.11. With i915 blacklisted, xe does not
+    # probe the GPU at all: there is no render node, niri sees no output
+    # and the session stays black. So i915 must not be blacklisted.
+    #
+    # The host currently runs kernel 7.2.11 with i915 (see host config).
+    # If xe ever supports 7d55 upstream, force the probe with the
+    # parameters the kernel prints itself:
+    #   boot.kernelParams = [
+    #     "modprobe.blacklist=i915"
+    #     "i915.force_probe=!7d55"
+    #     "xe.force_probe=7d55"
+    #   ];
 
     # Match the CPU governor to the power source: full speed on AC (gaming),
     # powersave on battery. power-profiles-daemon stays in charge of the
