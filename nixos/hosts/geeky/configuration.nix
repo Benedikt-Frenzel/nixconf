@@ -27,10 +27,13 @@
       self.nixosModules.obsidian
       self.nixosModules.gramps
       self.nixosModules.syncthing
+      self.nixosModules.rclone
       self.nixosModules.ausweisapp
       self.nixosModules.opensnitch
       self.nixosModules.secureboot
       self.nixosModules.nitrokey
+      self.nixosModules.scanner
+      self.nixosModules.fwupd
 
       self.nixosModules.gaming
     ];

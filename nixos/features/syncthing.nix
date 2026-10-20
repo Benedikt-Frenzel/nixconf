@@ -39,6 +39,14 @@
             ".obsidian/workspace-mobile.json"
           ];
         };
+        hochzeit = {
+          id = "hochzeit";
+          label = "Hochzeit";
+          path = "${home}/Documents/Hochzeit";
+          # Add peers here once selected; the rclone module bisyncs this
+          # folder with Proton Drive and Google Drive on top.
+          devices = [];
+        };
       };
     };
 
