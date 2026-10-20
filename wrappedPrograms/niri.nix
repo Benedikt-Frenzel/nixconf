@@ -24,6 +24,14 @@
       in {
         prefer-no-csd = true;
 
+        # Best effort: the docked LGs currently report VRR as unsupported,
+        # but eDP-1 does support it. Allowing it everywhere is harmless.
+        outputs = {
+          "eDP-1".variable-refresh-rate = _: { };
+          "DP-4".variable-refresh-rate = _: { };
+          "DP-6".variable-refresh-rate = _: { };
+        };
+
         cursor = {
           xcursor-theme = "Afterglow-Recolored-Gruvbox-Green";
           xcursor-size = 24;
