@@ -21,29 +21,28 @@
     #     "xe.force_probe=7d55"
     #   ];
 
-    # Match the CPU governor to the power source: full speed on AC (gaming),
-    # powersave on battery. power-profiles-daemon stays in charge of the
-    # profile; this unit only reacts to plug/unplug events and on boot.
-    # On Intel HWP, "performance" lifts the min frequency to the boost range.
-    systemd.services.cpu-governor = {
-      description = "Set CPU governor based on AC status";
+    # Switch the power profile with the power source. On Intel HWP,
+    # power-profiles-daemon drives performance via EPP (the cpufreq governor
+    # stays "powersave"), so writing the governor directly gets overridden by
+    # PPD. Driving PPD keeps it the single owner. Docked on AC -> performance,
+    # battery -> balanced. Change the AC branch if you prefer balanced on AC.
+    systemd.services.power-profile-ac = {
+      description = "Select the power profile based on AC status";
       wantedBy = ["multi-user.target"];
       serviceConfig.Type = "oneshot";
       script = ''
-        governor=powersave
+        profile=balanced
         for supply in /sys/class/power_supply/*; do
           [ "$(cat "$supply/type" 2>/dev/null)" = "Mains" ] || continue
-          [ "$(cat "$supply/online" 2>/dev/null)" = "1" ] && governor=performance
+          [ "$(cat "$supply/online" 2>/dev/null)" = "1" ] && profile=performance
           break
         done
-        for policy in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
-          echo "$governor" > "$policy"
-        done
+        ${pkgs.power-profiles-daemon}/bin/powerprofilesctl set "$profile"
       '';
     };
 
     services.udev.extraRules = ''
-      SUBSYSTEM=="power_supply", ATTR{type}=="Mains", RUN+="${pkgs.systemd}/bin/systemctl start cpu-governor.service"
+      SUBSYSTEM=="power_supply", ATTR{type}=="Mains", RUN+="${pkgs.systemd}/bin/systemctl start power-profile-ac.service"
     '';
 
     programs = {

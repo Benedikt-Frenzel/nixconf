@@ -29,6 +29,7 @@ gamemoderun gamescope --mangoapp -w 1920 -h 1080 -F fsr -- %command%
   `nixos/hosts/geeky/configuration.nix` to go back to the default 6.18.
 - If xe supports 7d55 upstream one day, force the probe with the parameters
   the kernel prints itself (`i915.force_probe=!7d55`, `xe.force_probe=7d55`).
-- Governor: on AC the CPU governor is forced to `performance`; on battery it
-  goes back to `powersave`. Manage with `powerprofilesctl` if needed.
+- Power profile: switched with the power source via power-profiles-daemon
+  (AC → performance, battery → balanced). On Intel HWP the cpufreq governor
+  stays `powersave`; the profile acts through EPP.
 - VRR is allowed on eDP-1/DP-4/DP-6; the docked LGs report VRR as unsupported.
