@@ -94,7 +94,23 @@
       "aarch64-darwin"
     ]) {
       packages.opencode2 = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode2;
-      packages.mistral-vibe = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mistral-vibe;
+      packages.mistral-vibe = let
+        llmVibe = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mistral-vibe;
+        # python3.pkgs.mcp runs integration tests that spawn server
+        # subprocesses and bind TCP ports — blocked by the Nix sandbox
+        # on Linux. All failures are TimeoutError ("Server on port X
+        # did not start within 20.0 seconds"), i.e. environmental, not
+        # code bugs. nixpkgs already sets __darwinAllowLocalNetworking
+        # for macOS; on Linux there is no per-derivation equivalent, so
+        # skip the check phase for mcp.
+        mcpDep = builtins.head (builtins.filter (d: (d.pname or "") == "mcp") llmVibe.dependencies);
+        fixedMcp = mcpDep.overridePythonAttrs (_: {
+          doCheck = false;
+        });
+      in
+        llmVibe.overridePythonAttrs (old: {
+          dependencies = map (d: if (d.pname or "") == "mcp" then fixedMcp else d) old.dependencies;
+        });
     })
   ];
 }
