@@ -1,9 +1,29 @@
 {inputs, ...}: {
-  perSystem = {pkgs, ...}: {
+  perSystem = {pkgs, ...}: let
+    # noctalia-qs 0.0.12 fails to build with Qt 6.11.2 / GCC 16:
+    # HyprlandMonitor and HyprlandWorkspace are forward-declared in the
+    # hyprland-ipc headers but MOC requires complete types
+    # (static_assert TypeIsSuitableForMetaType). The community fork v0.0.13
+    # backports the upstream quickshell fix (Q_MOC_INCLUDE, commit 5d5d498).
+    # https://github.com/noctalia-dev/noctalia/issues/4761
+    pkgs' = pkgs.appendOverlays [
+      (_: prev: {
+        noctalia-qs = prev.noctalia-qs.overrideAttrs (old: {
+          version = "0.0.13";
+          src = prev.fetchFromGitHub {
+            owner = "DBeidachazi";
+            repo = "noctalia-qs";
+            tag = "v0.0.13";
+            hash = "sha256-n3ez5hVvPiSL4kRbvgvi6a8KewCzW5kr1OMvdyuTfWw=";
+          };
+        });
+      })
+    ];
+  in {
     packages = {
       noctalia-shell = inputs.wrapper-modules.wrappers.noctalia-shell.wrap {
-        inherit pkgs;
-        package = pkgs.noctalia-shell.overrideAttrs {
+        pkgs = pkgs';
+        package = pkgs'.noctalia-shell.overrideAttrs {
           name = "vjnoctalia2";
         };
         env = {
