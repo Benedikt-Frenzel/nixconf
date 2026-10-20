@@ -23,9 +23,15 @@
     packages = {
       noctalia-shell = inputs.wrapper-modules.wrappers.noctalia-shell.wrap {
         pkgs = pkgs';
-        package = pkgs'.noctalia-shell.overrideAttrs {
+        package = pkgs'.noctalia-shell.overrideAttrs (old: {
           name = "vjnoctalia2";
-        };
+          # New Qt versions expose QtQuick.Color, shadowing Noctalia's
+          # theme singleton and leaving panels black (upstream #4877).
+          postPatch = (old.postPatch or "") + ''
+            mv Commons/Color.qml Commons/NColor.qml
+            find . -name '*.qml' -exec sed -i 's/\bColor\./NColor./g' {} +
+          '';
+        });
         env = {
           "NOCTALIA_CACHE_DIR" = "/tmp/vj-noctalia-cache/";
         };
