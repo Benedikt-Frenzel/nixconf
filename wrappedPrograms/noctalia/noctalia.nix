@@ -47,7 +47,7 @@
           mOnTertiary = "#282828";
           mOutline = "#504945";
           mPrimary = "#b8bb26";
-          mSecondary = "#fabd2f";
+          mSecondary = "#fe8019";
           mShadow = "#282828";
           mSurface = "#282828";
           mSurfaceVariant = "#3c3836";
@@ -95,7 +95,8 @@
               left = [
                 {
                   colorizeDistroLogo = true;
-                  colorizeSystemIcon = "tertiary";
+                  colorizeSystemIcon = "secondary";
+                  colorizeSystemText = "secondary";
                   customIconPath = "";
                   enableColorization = true;
                   id = "ControlCenter";
@@ -104,11 +105,14 @@
                 {
                   characterCount = 2;
                   colorizeIcons = false;
+                  emptyColor = "tertiary";
                   enableScrollWheel = true;
+                  focusedColor = "secondary";
                   followFocusedScreen = false;
                   hideUnoccupied = true;
                   id = "Workspace";
                   labelMode = "none";
+                  occupiedColor = "primary";
                   showApplications = false;
                   showLabelsOnlyWhenOccupied = true;
                 }
@@ -118,8 +122,10 @@
                   hideWhenZero = false;
                   id = "NotificationHistory";
                   showUnreadBadge = true;
+                  unreadBadgeColor = "secondary";
                 }
                 {
+                  iconColor = "secondary";
                   id = "PowerProfile";
                 }
                 {
@@ -144,12 +150,12 @@
                   id = "KeyboardLayout";
                 }
                 {
+                  clockColor = "secondary";
                   customFont = "";
                   formatHorizontal = "HH:mm ddd, MMM dd";
                   formatVertical = "HH mm - dd MM";
                   id = "Clock";
                   useCustomFont = false;
-                  usePrimaryColor = true;
                 }
                 {
                   blacklist = [];

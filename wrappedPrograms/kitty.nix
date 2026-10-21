@@ -25,7 +25,10 @@
         allow_remote_control = "yes";
         shell_integration = "enabled";
 
+        cursor = self.theme.base09;
         cursor_trail = 3;
+
+        url_color = self.theme.base09;
 
         map = [
           "alt+1 goto_tab 1"
@@ -45,13 +48,12 @@
         background = self.theme.base00;
         foreground = self.theme.base07;
 
-        cursor = self.theme.base07;
-
         selection_foreground = self.theme.base02;
         selection_background = self.theme.base01;
 
-        active_tab_foreground = self.theme.base0B;
+        active_tab_foreground = self.theme.base09;
         active_tab_background = self.theme.base03;
+        inactive_tab_foreground = self.theme.base04;
         inactive_tab_background = self.theme.base01;
 
         color0 = self.theme.base00;
