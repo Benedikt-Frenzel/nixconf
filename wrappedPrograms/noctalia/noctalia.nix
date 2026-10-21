@@ -45,7 +45,7 @@
           mOnSurface = "#fbf1c7";
           mOnSurfaceVariant = "#ebdbb2";
           mOnTertiary = "#282828";
-          mOutline = "#57514e";
+          mOutline = "#504945";
           mPrimary = "#b8bb26";
           mSecondary = "#fabd2f";
           mShadow = "#282828";

@@ -1,6 +1,6 @@
 let
   theme = {
-    base00 = "#242424"; # bg
+    base00 = "#282828"; # bg
     base01 = "#3c3836"; # dark
     base02 = "#504945";
     base03 = "#665c54";
@@ -13,9 +13,9 @@ let
     base0A = "#fabd2f"; # yellow
     base0B = "#b8bb26"; # green
     base0C = "#8ec07c"; # cyan
-    base0D = "#7daea3"; # blue
-    base0E = "#e089a1"; # magenta
-    base0F = "#f28534"; # orange
+    base0D = "#83a598"; # blue
+    base0E = "#d3869b"; # magenta
+    base0F = "#d65d0e"; # orange
   };
 
   stripHash = str:

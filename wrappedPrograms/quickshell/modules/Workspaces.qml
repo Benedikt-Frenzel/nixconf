@@ -13,13 +13,13 @@ ColumnLayout {
             implicitHeight: 22
             implicitWidth: 22
             radius: 6
-            color: modelData.focused ? "#7daea3" : (modelData.active ? "#7daea3" : "#343434")
+            color: modelData.focused ? "#83a598" : (modelData.active ? "#83a598" : "#3c3836")
 
             Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 radius: 100
-                color: modelData.focused ? "#282828" : modelData.urgent ? "#fb4934" : "#d8dee9"
+                color: modelData.focused ? "#282828" : modelData.urgent ? "#fb4934" : "#ebdbb2"
 
                 implicitHeight: 10
                 implicitWidth: 10

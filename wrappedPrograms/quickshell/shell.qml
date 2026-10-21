@@ -36,7 +36,7 @@ ShellRoot {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 width: panelWidth
-                color: "#222222"
+                color: "#282828"
 
                 ColumnLayout {
                     anchors.fill: parent
@@ -47,7 +47,7 @@ ShellRoot {
                         anchors.horizontalCenter: parent.horizontalCenter
                         text: "󱄅"
                         font.pixelSize: 29
-                        color: "#7daea3"
+                        color: "#83a598"
                     }
 
                     Workspaces {}
@@ -130,11 +130,11 @@ ShellRoot {
 
                         color: {
                             if (offset === 0)
-                                return "white";
+                                return "#fbf1c7";
                             if (offset === 1)
-                                return "#CCCCCC";
+                                return "#d5c4a1";
                             if (offset === 2)
-                                return "#888888";
+                                return "#928374";
                             return "transparent";
                         }
 
