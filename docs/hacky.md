@@ -123,6 +123,8 @@ Site-to-Site-Tunnel zum VyOS-Router, siehe `docs/vyos.md`.
 
 - Interface `wg0`: `10.254.100.2/30` und `fd00:254:100::2/64`.
 - Peer: VyOS-Interface `wg100`, Endpunkt `home.okt.bfr.sh:51910`.
+- Lauscht auf UDP `51910`; die Firewall lässt nur `89.57.115.113` (Router)
+  an diesen Port, damit der Router den Tunnel auch aufbauen kann.
 - Über den Tunnel erreichbar: munin (`10.254.101.0/30`, `fd00:254:101::/64`),
   das Home-LAN (`10.12.0.0/16`, `2a03:7845:3371:100::/56`) sowie die
   WireGuard-Bereiche `10.254.0.0/16` und `10.255.0.0/16`.

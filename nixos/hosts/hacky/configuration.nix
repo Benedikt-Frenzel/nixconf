@@ -106,6 +106,8 @@
       ];
       vyosPublicKey = "BtWRADnhnaycbt16+t026KH9mAyY3GNqSj9rMeDAQhw=";
       endpoint = "home.okt.bfr.sh:51910";
+      listenPort = 51910;
+      routerIPv4 = "89.57.115.113";
       allowedIPs = [
         # Router and the other server.
         "10.254.100.1/32"

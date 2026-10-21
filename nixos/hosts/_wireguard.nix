@@ -29,6 +29,24 @@
       '';
     };
 
+    listenPort = lib.mkOption {
+      type = lib.types.port;
+      example = 51910;
+      description = ''
+        UDP port the tunnel listens on. The router dials this port with the
+        static public IPv4 of this host, so the firewall has to allow it.
+      '';
+    };
+
+    routerIPv4 = lib.mkOption {
+      type = lib.types.str;
+      example = "89.57.115.113";
+      description = ''
+        Public IPv4 of the router. Only this address may reach the tunnel
+        port.
+      '';
+    };
+
     allowedIPs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       description = "Networks reachable through the tunnel, in addition to the shared ones.";
@@ -40,6 +58,7 @@
     # rule the peers cannot answer a ping over the tunnel.
     networking.firewall.extraInputRules = ''
       iifname "wg0" icmp type echo-request accept comment "ICMP ping over the tunnel"
+      ip saddr ${config.wireguardS2S.routerIPv4} udp dport ${toString config.wireguardS2S.listenPort} accept comment "WireGuard from the router"
     '';
 
     # The private key and the preshared key live in root-only files below
@@ -49,6 +68,7 @@
     networking.wireguard.interfaces.wg0 = {
       privateKeyFile = "/var/lib/secrets/wireguard-private-key";
       ips = config.wireguardS2S.ips;
+      listenPort = config.wireguardS2S.listenPort;
       # The endpoint is a DDNS name and has to be resolved again from time to
       # time. With the networkd backend this is a timer that reloads networkd.
       dynamicEndpointRefreshSeconds = 300;
