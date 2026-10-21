@@ -1,5 +1,21 @@
 # OpenSnitch auf geeky
 
+## Status: deaktiviert
+
+OpenSnitch ist auf geeky derzeit **nicht aktiv**. Das Modul
+`nixos/features/opensnitch.nix` liegt weiter im Repo, wird aber von keinem Host
+importiert. Grund: die Rückfragen der UI waren zu nervig.
+
+Reaktivieren: in `nixos/hosts/geeky/configuration.nix` die Zeile
+`self.nixosModules.opensnitch` in die Importliste aufnehmen, danach neu bauen
+(`nh os build` bzw. `nh os switch`).
+
+Nach dem Deaktivieren bleiben die Persistenz-Einträge für `/var/lib/opensnitch`
+und `~/.config/opensnitch` weg. Beim nächsten Boot räumt Impermanence die
+Verzeichnisse daher auf, die alten Regeln sind weg.
+
+## Beschreibung
+
 `nixos/features/opensnitch.nix` aktiviert den Systemdienst `opensnitchd` und
 installiert `opensnitch-ui`. Die UI startet als systemd-Benutzerdienst mit der
 grafischen Sitzung. Die vorhandene NixOS-Firewall bleibt unverändert aktiv,
@@ -54,11 +70,11 @@ journalctl -u opensnitchd.service -b
 journalctl --user -u opensnitch-ui.service -b
 ```
 
-Zum zeitweisen Abschalten der zusätzlichen Anwendungsfilterung:
+Zum Abschalten der zusätzlichen Anwendungsfilterung für eine Sitzung:
 
 ```sh
 sudo systemctl stop opensnitchd.service
 ```
 
-Die NixOS-Firewall bleibt dabei aktiv. Der Dienst wird damit nicht dauerhaft aus
-der Konfiguration entfernt.
+Die NixOS-Firewall bleibt dabei aktiv. Solange das Modul nicht importiert ist,
+existiert der Dienst auf dem System ohnehin nicht mehr.

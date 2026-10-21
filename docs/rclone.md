@@ -61,8 +61,9 @@ Prüfen:
 $ rclone lsd protondrive:
 ```
 
-**opensnitch** fragt beim ersten Zugriff nach ausgehenden Verbindungen von
-`rclone` — einmal erlauben (auch für den systemd-Dienst).
+**opensnitch** ist derzeit deaktiviert (siehe `docs/opensnitch.md`). Sollte es
+wieder aktiviert werden, fragt es beim ersten Zugriff nach ausgehenden
+Verbindungen von `rclone` — einmal erlauben (auch für den systemd-Dienst).
 
 ## Erster Sync (einmalig)
 

@@ -1,3 +1,6 @@
+# OpenSnitch-Modul. Aktuell wird es auf keinem Host importiert, weil die
+# Rückfragen der UI zu nervig waren. Reaktivieren durch den Import in der
+# Host-Konfiguration, z. B. self.nixosModules.opensnitch.
 {
   flake.nixosModules.opensnitch = {
     pkgs,

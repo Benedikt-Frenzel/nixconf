@@ -29,7 +29,8 @@
       self.nixosModules.syncthing
       self.nixosModules.rclone
       self.nixosModules.ausweisapp
-      self.nixosModules.opensnitch
+      # OpenSnitch nervt zu sehr, das Modul bleibt vorerst im Repo.
+      # Reaktivieren: self.nixosModules.opensnitch
       self.nixosModules.secureboot
       self.nixosModules.nitrokey
       self.nixosModules.scanner
