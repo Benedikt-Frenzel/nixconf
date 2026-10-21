@@ -53,7 +53,13 @@
         enable = true;
         network = {
           enable = true;
-          networks = config.systemd.network.networks;
+          # Remote unlock only needs the primary IPv4, not the full uplink
+          # or any WireGuard network configuration from the running system.
+          networks."10-uplink" = {
+            inherit (config.systemd.network.networks."10-uplink") matchConfig networkConfig;
+            address = ["149.154.159.86/24"];
+            routes = [{Gateway = "149.154.159.1";}];
+          };
         };
         users.root.shell = pkgs.writeShellScript "unlock-root" ''
           exec /bin/systemd-tty-ask-password-agent --query --watch

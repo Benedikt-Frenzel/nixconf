@@ -13,7 +13,9 @@
   See [EDIS IPv6 configuration](https://docs.edisglobal.com/vps-management/ipv6-configuration).
 - DNS: Quad9 (`9.9.9.9`, `149.112.112.112`); systemd-resolved's built-in
   fallback DNS servers are disabled.
-- The uplink configuration is shared with the initrd.
+- The initrd uses only the primary IPv4 and its gateway for remote unlock;
+  additional IPv4 addresses, public IPv6 and WireGuard are configured only
+  in the running system.
 - 2 vCPUs, 4 GiB RAM, 45 GiB disk; BIOS/GRUB, no UEFI required.
 
 ## Storage
